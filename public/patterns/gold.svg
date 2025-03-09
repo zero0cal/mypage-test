@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <pattern id="gold-pattern" patternUnits="userSpaceOnUse" width="24" height="24">
+      <path fill="none" stroke="rgba(255, 215, 0, 0.2)" stroke-width="0.5" d="M0,6 L6,0 L18,0 L24,6 L24,18 L18,24 L6,24 L0,18 Z" />
+      <path fill="none" stroke="rgba(255, 215, 0, 0.15)" stroke-width="0.5" d="M6,0 L6,24 M18,0 L18,24 M0,6 L24,6 M0,18 L24,18" />
+    </pattern>
+  </defs>
+  <rect width="24" height="24" fill="url(#gold-pattern)" />
+</svg>
+

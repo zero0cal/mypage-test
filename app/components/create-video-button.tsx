@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Sparkles, Zap } from "lucide-react"
+import { Sparkles, Zap, ArrowRight } from "lucide-react"
 
 interface CreateVideoButtonProps {
   onClick: () => void
@@ -60,70 +59,53 @@ export default function CreateVideoButton({ onClick, credits }: CreateVideoButto
       >
         {/* 내부 컨테이너 */}
         <motion.div
-          className={`relative z-10 flex items-center justify-between rounded-xl bg-gradient-to-br ${buttonConfig.innerFrom} ${buttonConfig.innerTo} px-6 py-5 transition-all duration-300`}
+          className={`relative z-10 flex items-center justify-between rounded-xl bg-gradient-to-br ${buttonConfig.innerFrom} ${buttonConfig.innerTo} px-4 sm:px-6 py-4 transition-all duration-300`}
           layout
         >
           {/* 왼쪽: 아이콘과 텍스트 */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* 아이콘 컨테이너 */}
             <div className="relative">
               <motion.div
                 className="absolute -inset-1 animate-pulse rounded-full bg-white/20 blur-md"
                 animate={{ scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-              ></motion.div>
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+              />
+              <div className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
                 {buttonConfig.icon}
               </div>
             </div>
 
             {/* 텍스트 */}
-            <div>
-              <motion.h3
-                className="text-xl font-bold text-white"
-                layout
-                key={buttonConfig.text} // 텍스트가 변경될 때 애니메이션 적용
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {buttonConfig.text}
-              </motion.h3>
-            </div>
+            <motion.h3
+              className="text-lg sm:text-xl font-bold text-white whitespace-nowrap"
+              layout
+              key={buttonConfig.text}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {buttonConfig.text}
+            </motion.h3>
           </div>
 
           {/* 오른쪽: 생성권 정보 */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <motion.div
-              className="rounded-full bg-white/10 px-4 py-1.5 backdrop-blur-sm"
+              className="rounded-full bg-white/10 px-3 sm:px-4 py-1.5 backdrop-blur-sm"
               layout
-              key={buttonConfig.creditsText} // 텍스트가 변경될 때 애니메이션 적용
+              key={buttonConfig.creditsText}
               initial={{ opacity: 0, x: 5 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="text-base font-bold text-white">{buttonConfig.creditsText}</p>
+              <p className="text-sm sm:text-base font-bold text-white whitespace-nowrap">{buttonConfig.creditsText}</p>
             </motion.div>
             <motion.div
               animate={isHovered ? { x: 5 } : { x: 0 }}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm"
+              className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-white"
-              >
-                <path
-                  d="M4 12H20M20 12L14 6M20 12L14 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowRight className="w-5 h-5 text-white" />
             </motion.div>
           </div>
         </motion.div>
@@ -186,7 +168,7 @@ export default function CreateVideoButton({ onClick, credits }: CreateVideoButto
           scale: isHovered ? 1.02 : 1,
         }}
         transition={{ duration: 0.3 }}
-      ></motion.div>
+      />
     </motion.div>
   )
 }

@@ -3,69 +3,27 @@
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { Play, ChevronRight, Sparkles, TrendingUp, ArrowRight, X, MoreVertical, Star } from "lucide-react"
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion"
+import {
+  Play,
+  ChevronRight,
+  Sparkles,
+  TrendingUp,
+  ArrowRight,
+  X,
+  Settings,
+  Star,
+  Check,
+  Download,
+  Share,
+  ArrowUp,
+  Eye,
+  Info,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import PhoneMockup from "@/app/components/PhoneMockup"
 import CreateVideoButton from "@/app/components/create-video-button"
-import { ProgressSteps } from "@/app/components/progress-steps"
-
-// 아이콘 컴포넌트
-const Check = (props: any) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-)
-
-const Download = (props: any) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="7 10 12 15 17 10" />
-    <line x1="12" y1="15" x2="12" y2="3" />
-  </svg>
-)
-
-const Share = (props: any) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-    <polyline points="16 6 12 2 8 6" />
-    <line x1="12" y1="2" x2="12" y2="15" />
-  </svg>
-)
 
 // 구독 플랜 타입 정의
 type SubscriptionPlan = "starter" | "basic" | "premium" | "premium-plus"
@@ -75,7 +33,7 @@ const mockStore = {
   name: "에이바이트 키친",
   marketingScore: 87,
   videoCredits: 2,
-  subscriptionPlan: "basic" as SubscriptionPlan, // 기본값으로 basic 설정
+  subscriptionPlan: "premium-plus" as SubscriptionPlan, // 기본값으로 basic 설정
   recentActivity: [
     { type: "view", count: 1243, change: "+12%" },
     { type: "engagement", count: 356, change: "+8%" },
@@ -106,14 +64,63 @@ export default function HomePage() {
   const [credits, setCredits] = useState(mockStore.videoCredits)
   // 구독 플랜 상태 관리
   const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(mockStore.subscriptionPlan)
+  // 프로그레스 상태 관리
+  const [progressPercent, setProgressPercent] = useState(0)
+  const animatedProgress = useMotionValue(0)
+  const displayProgress = useTransform(animatedProgress, Math.round)
+  const circleProgress = useMotionValue(0)
 
-  // 단계별 정보 정의 - 순서대로 진행되도록 수정
+  // 단계별 정보 정의 - 더 간결하고 자연스러운 메시지로 수정
   const steps = [
-    { text: "가게 정보 수집", time: 10, description: "가게의 기본 정보를 수집하고 있습니다" },
-    { text: "사진 선별", time: 10, description: "최적의 사진을 선별하고 있습니다" },
-    { text: "Gummy AI가 영상을 만들고 있어요", time: 20, description: "Gummy AI가 영상을 제작하고 있습니다" },
-    { text: `${mockStore.name}의 광고가 완성되고 있어요`, time: 10, description: "최종 광고를 완성하고 있습니다" },
+    { text: "가게 정보 수집", time: 10, description: "기본 정보를 수집하는 중" },
+    { text: "사진 선별", time: 10, description: "최적의 사진을 고르는 중" },
+    { text: "영상 제작", time: 20, description: "Gummy AI가 영상 제작 중" },
+    { text: "최종 편집", time: 10, description: "광고 영상 마무리 중" },
   ]
+
+  // 프로그레스 계산 함수
+  const calculateProgress = () => {
+    if (creationStep >= steps.length) return 100
+
+    // 완료된 단계의 진행률
+    const completedProgress = (creationStep / steps.length) * 100
+
+    // 현재 진행 중인 단계의 진행률
+    const currentStepProgress =
+      countdown === 0 ? (1 / steps.length) * 100 : (1 / steps.length) * (1 - countdown / steps[creationStep].time) * 100
+
+    return completedProgress + currentStepProgress
+  }
+
+  // 애니메이션 프로그레스 업데이트
+  useEffect(() => {
+    const animation = { progress: animatedProgress.get() }
+    const controls = animate(
+      animation,
+      {
+        progress: progressPercent,
+      },
+      {
+        duration: 0.8,
+        ease: "easeOut",
+        onUpdate: () => {
+          animatedProgress.set(animation.progress)
+        },
+      },
+    )
+
+    return () => controls.stop()
+  }, [progressPercent, animatedProgress])
+
+  // 프로그레스 업데이트
+  useEffect(() => {
+    if (isCreating) {
+      const newProgress = calculateProgress()
+      setProgressPercent(newProgress)
+    } else {
+      setProgressPercent(0)
+    }
+  }, [creationStep, countdown, isCreating])
 
   // 단계 진행 로직 개선
   useEffect(() => {
@@ -184,6 +191,7 @@ export default function HomePage() {
     setCreationStep(0)
     setVideoReady(false)
     setIsPlaying(false)
+    setProgressPercent(0)
   }
 
   // 테스트를 위한 크레딧 리셋 함수 추가 (실제 구현에서는 제거 가능)
@@ -237,7 +245,7 @@ export default function HomePage() {
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               onClick={() => setCredits(0)} // 테스트용 크레딧 리셋 기능
             >
-              <MoreVertical className="w-5 h-5 text-gray-500" />
+              <Settings className="w-5 h-5 text-gray-500" />
             </button>
           </div>
         </header>
@@ -259,15 +267,7 @@ export default function HomePage() {
                 <div className="flex items-baseline gap-2">
                   <p className="text-3xl font-bold text-gray-900">{mockStore.marketingScore}</p>
                   <div className="flex items-center gap-0.5 text-xs font-medium text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M12 19V5M12 5L5 12M12 5L19 12"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <ArrowUp className="w-3 h-3" />
                     5%
                   </div>
                 </div>
@@ -298,7 +298,7 @@ export default function HomePage() {
             <CreateVideoButton onClick={handleCreateVideo} credits={credits} />
           </motion.div>
 
-          {/* 영상 생성 프로세스 */}
+          {/* 영상 생성 프로세스 - 시각적으로 개선된 디자인 */}
           <AnimatePresence>
             {isCreating && (
               <motion.div
@@ -321,41 +321,248 @@ export default function HomePage() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* 왼쪽: 폰 목업 */}
-                    <div className="flex justify-center">
-                      <PhoneMockup
-                        videoSrc={getLoadingVideoSrc()}
-                        isLoading={true}
-                        loadingStep={creationStep}
-                        totalSteps={steps.length}
-                        stepText={creationStep >= 0 && creationStep < steps.length ? steps[creationStep].text : ""}
-                        className="scale-90"
-                      />
+                  <div className="space-y-6">
+                    {/* 원형 프로그레스 및 현재 단계 정보 */}
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                      {/* 원형 프로그레스 인디케이터 - 개선된 디자인 */}
+                      <div className="relative flex-shrink-0">
+                        <motion.div
+                          className="relative w-36 h-36 md:w-44 md:h-44"
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          {/* 배경 그라데이션 효과 */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFF5F5] to-[#FFEBEB] shadow-inner"></div>
+
+                          {/* 진행 원 */}
+                          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                            <defs>
+                              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#C02B2B" />
+                                <stop offset="100%" stopColor="#FF5050" />
+                              </linearGradient>
+                              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                              </filter>
+                            </defs>
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="#F0F0F0" strokeWidth="6" />
+                            <motion.circle
+                              cx="50"
+                              cy="50"
+                              r="42"
+                              fill="none"
+                              strokeWidth="6"
+                              stroke="url(#progressGradient)"
+                              strokeLinecap="round"
+                              filter="url(#glow)"
+                              strokeDasharray={2 * Math.PI * 42}
+                              animate={{
+                                strokeDashoffset: 2 * Math.PI * 42 * (1 - progressPercent / 100),
+                              }}
+                              transition={{ duration: 0.8, ease: "easeInOut" }}
+                            />
+                          </svg>
+
+                          {/* 중앙 콘텐츠 */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                            <div className="relative">
+                              <motion.div
+                                initial={{ scale: 1 }}
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                                className="absolute -inset-3 rounded-full bg-white/50 blur-md"
+                              ></motion.div>
+                              <motion.span
+                                className="relative text-4xl font-bold text-[#C02B2B]"
+                                animate={{
+                                  scale: [1, 1.05, 1],
+                                  transition: { duration: 0.3, ease: "easeInOut" },
+                                }}
+                              >
+                                <motion.span>{displayProgress}</motion.span>%
+                              </motion.span>
+                            </div>
+                            <span className="text-xs font-medium text-gray-500 mt-1">완료</span>
+                          </div>
+
+                          {/* 미묘한 장식적 요소 */}
+                          <motion.div
+                            className="absolute -z-10 inset-0 rounded-full"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1 }}
+                          >
+                            <div className="absolute top-3 right-3 w-3 h-3 rounded-full bg-[#C02B2B]/20"></div>
+                            <div className="absolute bottom-5 left-3 w-2 h-2 rounded-full bg-[#C02B2B]/20"></div>
+                          </motion.div>
+                        </motion.div>
+                      </div>
+
+                      {/* 현재 단계 정보 */}
+                      <div className="flex-1 w-full">
+                        <motion.div
+                          className="bg-gradient-to-r from-[#FFF5F5] to-[#FFF0F0] rounded-xl p-4 border border-red-100"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#C02B2B] to-[#E83A3A] flex items-center justify-center shadow-md">
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                              >
+                                <Sparkles className="w-5 h-5 text-white" />
+                              </motion.div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-base font-bold text-gray-900 truncate">
+                                {creationStep >= 0 && creationStep < steps.length
+                                  ? steps[creationStep].text
+                                  : "영상 생성 중"}
+                              </h4>
+                              <p className="text-sm text-gray-600 truncate">
+                                {creationStep >= 0 && creationStep < steps.length
+                                  ? steps[creationStep].description
+                                  : "처리 중..."}
+                              </p>
+                            </div>
+                            <div className="flex-shrink-0 flex flex-col items-center justify-center ml-2">
+                              <div className="text-xl font-bold text-[#C02B2B]">{countdown}</div>
+                              <p className="text-xs text-gray-500">초</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
                     </div>
 
-                    {/* 오른쪽: 진행 단계 */}
-                    <div className="flex flex-col justify-between">
-                      <ProgressSteps steps={steps} currentStep={creationStep} countdown={countdown} />
+                    {/* 단계별 타임라인 */}
+                    <div className="relative pt-2 pb-2">
+                      {/* 연결선 */}
+                      <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
-                      {/* 추가 정보 카드 */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100"
-                      >
-                        <h4 className="text-sm font-medium text-gray-900 mb-1">
-                          {creationStep >= 0 && creationStep < steps.length
-                            ? steps[creationStep].description
-                            : "Gummy AI가 영상을 제작 중입니다"}
-                        </h4>
-                        <p className="text-xs text-gray-500">
-                          {mockStore.name}의 특성을 분석하여 맞춤형 광고 영상을 제작 중입니다. 완성된 영상은 바로
-                          다운로드하거나 공유할 수 있습니다.
-                        </p>
-                      </motion.div>
+                      {steps.map((step, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          className={`relative flex items-start gap-4 mb-4 pl-2 ${
+                            index === creationStep ? "opacity-100" : index < creationStep ? "opacity-90" : "opacity-50"
+                          }`}
+                        >
+                          {/* 상태 아이콘 */}
+                          <div
+                            className={`relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                              index < creationStep
+                                ? "bg-[#C02B2B] text-white"
+                                : index === creationStep
+                                  ? "bg-white border-2 border-[#C02B2B] text-[#C02B2B]"
+                                  : "bg-gray-100 text-gray-400"
+                            }`}
+                          >
+                            {index < creationStep ? (
+                              <Check className="w-4 h-4" />
+                            ) : index === creationStep ? (
+                              <motion.div
+                                animate={{
+                                  scale: [1, 1.2, 1],
+                                  opacity: [1, 0.8, 1],
+                                }}
+                                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                              >
+                                <span className="text-sm font-medium">{index + 1}</span>
+                              </motion.div>
+                            ) : (
+                              <span className="text-sm font-medium">{index + 1}</span>
+                            )}
+
+                            {/* 현재 단계 표시기 */}
+                            {index === creationStep && (
+                              <motion.div
+                                className="absolute -inset-1 rounded-full border-2 border-[#C02B2B]"
+                                animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
+                                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                              ></motion.div>
+                            )}
+                          </div>
+
+                          {/* 단계 내용 */}
+                          <div className="flex-1 pt-1">
+                            <div className="flex justify-between items-center">
+                              <p
+                                className={`text-sm font-medium ${
+                                  index <= creationStep ? "text-gray-900" : "text-gray-400"
+                                }`}
+                              >
+                                {step.text}
+                              </p>
+                              <span
+                                className={`text-xs font-medium ${
+                                  index < creationStep
+                                    ? "text-emerald-500"
+                                    : index === creationStep
+                                      ? "text-[#C02B2B]"
+                                      : "text-gray-400"
+                                }`}
+                              >
+                                {index < creationStep
+                                  ? "완료"
+                                  : index === creationStep
+                                    ? `${countdown}초`
+                                    : `${step.time}초`}
+                              </span>
+                            </div>
+
+                            {/* 현재 단계 애니메이션 */}
+                            {index === creationStep && (
+                              <div className="mt-2 flex space-x-1">
+                                {[0, 1, 2].map((dot) => (
+                                  <motion.div
+                                    key={dot}
+                                    className="w-1.5 h-1.5 rounded-full bg-[#C02B2B]"
+                                    animate={{
+                                      y: [0, -4, 0],
+                                      opacity: [0.5, 1, 0.5],
+                                    }}
+                                    transition={{
+                                      duration: 1,
+                                      repeat: Number.POSITIVE_INFINITY,
+                                      delay: dot * 0.2,
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
+
+                    {/* 추가 정보 카드 */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="p-4 bg-gray-50 rounded-xl border border-gray-100"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                          <Info className="w-5 h-5 text-[#C02B2B]" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-900 mb-1">
+                            {mockStore.name}의 특성을 분석 중입니다
+                          </h4>
+                          <p className="text-xs text-gray-500">
+                            Gummy AI가 맞춤형 광고 영상을 제작 중입니다. 완성된 영상은 바로 다운로드하거나 공유할 수
+                            있습니다.
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
@@ -404,27 +611,27 @@ export default function HomePage() {
                           <Button className="bg-gradient-to-r from-[#C02B2B] to-[#E83A3A] hover:from-[#B02020] hover:to-[#D83030] text-sm h-9 px-4 rounded-xl shadow-sm">
                             <Download className="w-4 h-4 mr-1.5" /> 다운로드
                           </Button>
-                          <Button
-                            variant="outline"
-                            className="border-gray-200 text-gray-700 text-sm h-9 px-4 rounded-xl shadow-sm"
-                          >
-                            <Share className="w-4 h-4 mr-1.5" /> 공유하기
-                          </Button>
                         </div>
+                        <Button
+                          variant="outline"
+                          className="border-gray-200 text-gray-700 text-sm h-9 px-4 rounded-xl shadow-sm"
+                        >
+                          <Share className="w-4 h-4 mr-1.5" /> 공유하기
+                        </Button>
+                      </div>
 
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
-                            <p className="text-xs text-gray-500 mb-1">예상 조회수</p>
-                            <p className="text-sm font-bold text-gray-900">1.2K+</p>
-                          </div>
-                          <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
-                            <p className="text-xs text-gray-500 mb-1">예상 참여율</p>
-                            <p className="text-sm font-bold text-gray-900">8.5%</p>
-                          </div>
-                          <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
-                            <p className="text-xs text-gray-500 mb-1">예상 전환율</p>
-                            <p className="text-sm font-bold text-gray-900">3.2%</p>
-                          </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
+                          <p className="text-xs text-gray-500 mb-1">예상 조회수</p>
+                          <p className="text-sm font-bold text-gray-900">1.2K+</p>
+                        </div>
+                        <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
+                          <p className="text-xs text-gray-500 mb-1">예상 참여율</p>
+                          <p className="text-sm font-bold text-gray-900">8.5%</p>
+                        </div>
+                        <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
+                          <p className="text-xs text-gray-500 mb-1">예상 전환율</p>
+                          <p className="text-sm font-bold text-gray-900">3.2%</p>
                         </div>
                       </div>
                     </div>
@@ -497,20 +704,7 @@ export default function HomePage() {
                       <h3 className="text-sm font-medium text-white truncate">{video.title}</h3>
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-xs text-white/80 flex items-center gap-1">
-                          <svg
-                            width="10"
-                            height="10"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 2 12C6.47715 2 2 6.47715 2 12Z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                            />
-                            <path d="M15 12L10 16V8L15 12Z" fill="currentColor" />
-                          </svg>
+                          <Eye className="w-3 h-3" />
                           {video.views} 조회
                         </span>
                         <span className="text-xs text-white/80">{video.date}</span>
