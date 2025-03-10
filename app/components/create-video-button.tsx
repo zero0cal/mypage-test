@@ -8,13 +8,13 @@ import { Sparkles, Zap, ArrowRight } from "lucide-react"
 interface CreateVideoButtonProps {
   onClick: () => void
   credits: number
+  isPremiumPlus?: boolean // 프리미엄+ 구독자 여부
 }
 
-export default function CreateVideoButton({ onClick, credits }: CreateVideoButtonProps) {
+export default function CreateVideoButton({ onClick, credits, isPremiumPlus = false }: CreateVideoButtonProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-  // 마우스 위치에 따른 그라데이션 효과
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
     setMousePosition({
@@ -29,11 +29,11 @@ export default function CreateVideoButton({ onClick, credits }: CreateVideoButto
       ? {
           text: "영상 생성하기",
           icon: <Sparkles className="h-6 w-6 text-white" />,
-          gradientFrom: "from-[#FF4B4B]",
-          gradientTo: "to-[#FF7676]",
-          innerFrom: "from-[#FF3A3A]",
-          innerTo: "to-[#FF6B6B]",
-          hoverShadow: "hover:shadow-red-500/20",
+          gradientFrom: isPremiumPlus ? "from-[#FF4B4B]" : "from-[#FF4B4B]",
+          gradientTo: isPremiumPlus ? "to-[#FF7676]" : "to-[#FF7676]",
+          innerFrom: isPremiumPlus ? "from-[#FF3A3A]" : "from-[#FF3A3A]",
+          innerTo: isPremiumPlus ? "to-[#FF6B6B]" : "to-[#FF6B6B]",
+          hoverShadow: isPremiumPlus ? "hover:shadow-red-500/20" : "hover:shadow-red-500/20",
           creditsText: `영상 생성권 ${credits}개 남음`,
         }
       : {
@@ -47,6 +47,19 @@ export default function CreateVideoButton({ onClick, credits }: CreateVideoButto
           creditsText: "영상 생성권이 필요해요",
         }
 
+  // Ruby Diamond 스타일을 위한 추가 클래스
+  const rubyDiamondClasses = isPremiumPlus
+    ? `
+      relative overflow-hidden rounded-xl
+      before:absolute before:inset-0 
+      before:bg-[url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='50,0 100,50 50,100 0,50' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E")]
+      before:bg-repeat before:opacity-20
+      after:absolute after:inset-0
+      after:bg-gradient-to-br after:from-[#FF0000] after:to-[#FF4D4D]
+      after:opacity-80
+    `
+    : ""
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="relative w-full" layout>
       <motion.button
@@ -54,12 +67,41 @@ export default function CreateVideoButton({ onClick, credits }: CreateVideoButto
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onMouseMove={handleMouseMove}
-        className={`group relative w-full overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br ${buttonConfig.gradientFrom} ${buttonConfig.gradientTo} p-1 shadow-xl transition-all duration-300 hover:shadow-2xl ${buttonConfig.hoverShadow}`}
+        className={`
+          group relative w-full overflow-hidden
+          ${isPremiumPlus ? "rounded-xl" : "rounded-2xl"}
+          border ${isPremiumPlus ? "border-[#FFD700]" : "border-white/20"}
+          bg-gradient-to-br ${buttonConfig.gradientFrom} ${buttonConfig.gradientTo}
+          p-1 shadow-xl transition-all duration-300
+          hover:shadow-2xl ${buttonConfig.hoverShadow}
+          ${rubyDiamondClasses}
+        `}
         layout
       >
+        {/* Ruby Diamond 테두리 효과 */}
+        {isPremiumPlus && (
+          <>
+            {/* 외부 테두리 */}
+            <div className="absolute inset-0 rounded-xl border-2 border-[#FFD700]" />
+
+            {/* 코너 장식 */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#FFD700]" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#FFD700]" />
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#FFD700]" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#FFD700]" />
+
+            {/* 빛나는 효과 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shine" />
+          </>
+        )}
+
         {/* 내부 컨테이너 */}
         <motion.div
-          className={`relative z-10 flex items-center justify-between rounded-xl bg-gradient-to-br ${buttonConfig.innerFrom} ${buttonConfig.innerTo} px-4 sm:px-6 py-4 transition-all duration-300`}
+          className={`
+            relative z-10 flex items-center justify-between rounded-xl
+            bg-gradient-to-br ${buttonConfig.innerFrom} ${buttonConfig.innerTo}
+            px-4 sm:px-6 py-4 transition-all duration-300
+          `}
           layout
         >
           {/* 왼쪽: 아이콘과 텍스트 */}

@@ -31,6 +31,7 @@ const subscriptionPlans = [
     features: ["무제한 영상 제작", "맞춤형 템플릿 제작", "4K 해상도", "우선 고객 지원", "전용 매니저"],
     highlight: false,
     bgColor: "bg-white",
+    isPremiumPlus: true,
   },
 ]
 
@@ -44,6 +45,15 @@ export default function SubscriptionPage() {
       // 결제 페이지로 이동 또는 결제 처리
     }
   }
+
+  // Ruby Diamond 스타일의 배경 패턴을 위한 CSS 클래스
+  const rubyPatternClass = `
+    relative overflow-hidden
+    before:absolute before:inset-0 before:bg-gradient-to-br before:from-[#FF4D4D] before:to-[#FF0000]
+    before:opacity-80 before:transform before:rotate-45
+    after:absolute after:inset-0 after:bg-[url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='50,0 100,50 50,100 0,50' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E")]
+    after:bg-repeat after:opacity-20 after:animate-shine
+  `
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF5F5] to-white">
@@ -82,36 +92,67 @@ export default function SubscriptionPage() {
                 className={`${plan.highlight ? "md:scale-105" : ""}`}
               >
                 <Card
-                  className={`h-full ${plan.bgColor} ${
+                  className={`relative h-full ${plan.bgColor} ${
                     plan.highlight ? "border-2 border-[#C02B2B]" : "border border-gray-200"
-                  } ${selectedPlan === plan.id ? "ring-2 ring-[#C02B2B]" : ""}`}
+                  } ${selectedPlan === plan.id ? "ring-2 ring-[#C02B2B]" : ""} ${
+                    plan.isPremiumPlus ? rubyPatternClass : ""
+                  }`}
                 >
-                  <CardHeader>
-                    <CardTitle className={`text-2xl ${plan.highlight ? "text-[#C02B2B]" : ""}`}>{plan.name}</CardTitle>
+                  {/* Ruby Diamond 효과를 위한 추가 장식 요소들 */}
+                  {plan.isPremiumPlus && (
+                    <>
+                      {/* 골드 테두리 효과 */}
+                      <div className="absolute inset-0 border-2 border-[#FFD700] rounded-lg"></div>
+
+                      {/* 코너 장식 */}
+                      <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#FFD700]"></div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#FFD700]"></div>
+                      <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#FFD700]"></div>
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#FFD700]"></div>
+
+                      {/* 빛나는 효과 */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shine"></div>
+                    </>
+                  )}
+
+                  <CardHeader className="relative z-10">
+                    <CardTitle
+                      className={`text-2xl ${plan.isPremiumPlus ? "text-white" : plan.highlight ? "text-[#C02B2B]" : ""}`}
+                    >
+                      {plan.name}
+                    </CardTitle>
                     <CardDescription>
-                      <span className={`text-3xl font-bold ${plan.highlight ? "text-[#C02B2B]" : "text-gray-900"}`}>
+                      <span
+                        className={`text-3xl font-bold ${
+                          plan.isPremiumPlus ? "text-white" : plan.highlight ? "text-[#C02B2B]" : "text-gray-900"
+                        }`}
+                      >
                         {plan.price}
                       </span>
-                      <span className="text-sm text-gray-500">/월</span>
+                      <span className={`text-sm ${plan.isPremiumPlus ? "text-white/80" : "text-gray-500"}`}>/월</span>
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <ul className="space-y-2">
                       {plan.features.map((feature, i) => (
                         <li key={i} className="flex items-center">
-                          <Check className="h-5 w-5 text-[#C02B2B] mr-2 flex-shrink-0" />
-                          <span>{feature}</span>
+                          <Check
+                            className={`h-5 w-5 ${plan.isPremiumPlus ? "text-white" : "text-[#C02B2B]"} mr-2 flex-shrink-0`}
+                          />
+                          <span className={plan.isPremiumPlus ? "text-white" : ""}>{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="relative z-10">
                     <Button
                       onClick={() => setSelectedPlan(plan.id)}
                       className={`w-full ${
-                        plan.highlight || selectedPlan === plan.id
-                          ? "bg-[#C02B2B] hover:bg-[#A02323] text-white"
-                          : "bg-white text-gray-900 border border-gray-300 hover:bg-gray-100"
+                        plan.isPremiumPlus
+                          ? "bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFD700] hover:to-[#FF8C00] text-black shadow-lg"
+                          : plan.highlight || selectedPlan === plan.id
+                            ? "bg-[#C02B2B] hover:bg-[#A02323] text-white"
+                            : "bg-white text-gray-900 border border-gray-300 hover:bg-gray-100"
                       }`}
                     >
                       {selectedPlan === plan.id ? "선택됨" : "선택하기"}
