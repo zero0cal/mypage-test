@@ -23,8 +23,6 @@ import {
   Users,
   ShoppingCart,
 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
 import PhoneMockup from "@/app/components/PhoneMockup"
 import CreateVideoButton from "@/app/components/create-video-button"
 
@@ -36,7 +34,7 @@ const mockStore = {
   name: "에이바이트 키친",
   marketingScore: 87,
   videoCredits: 2,
-  subscriptionPlan: "premium-plus" as SubscriptionPlan, // 테스트를 위해 premium-plus로 설정
+  subscriptionPlan: "basic" as SubscriptionPlan, // 테스트를 위해 premium-plus로 설정
   recentActivity: [
     { type: "view", count: 1243, change: "+12%", icon: <Eye className="w-4 h-4" /> },
     { type: "engagement", count: 356, change: "+8%", icon: <Users className="w-4 h-4" /> },
@@ -564,7 +562,7 @@ export default function HomePage() {
                                   transition: { duration: 0.3, ease: "easeInOut" },
                                 }}
                               >
-                                <motion.span>{displayProgress}</motion.span>%
+                                <motion.span>{displayProgress}</motion.span>% 
                               </motion.span>
                             </div>
                           </motion.div>
@@ -745,9 +743,97 @@ export default function HomePage() {
 
           {/* 최근 생성된 영상 */}
           {videoReady && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-5">
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.98 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                },
+              }}
+              className="relative z-20"
+            >
+              {/* 모달 외부 효과 - 주변 글로우 */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-3xl blur-lg"></div>
+
+              {/* 메인 모달 */}
+              <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
+                {/* 상단 장식 바 */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#C02B2B]"></div>
+
+                {/* 배경 애니메이션 효과 */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {/* 배경 그라데이션 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
+
+                  {/* 움직이는 원형 효과들 */}
+                  <motion.div
+                    className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-gradient-to-br from-red-100/30 via-orange-100/30 to-red-100/30 blur-xl"
+                    animate={{
+                      scale: [1, 1.1, 1],
+                      opacity: [0.2, 0.3, 0.2],
+                      rotate: [0, 5, 0],
+                    }}
+                    transition={{ duration: 12, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  />
+                  <motion.div
+                    className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-gradient-to-tr from-red-100/20 via-pink-100/20 to-orange-100/20 blur-xl"
+                    animate={{
+                      scale: [1.1, 1, 1.1],
+                      opacity: [0.15, 0.25, 0.15],
+                      rotate: [0, -5, 0],
+                    }}
+                    transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  />
+
+                  {/* 미묘한 패턴 효과 */}
+                  <div
+                    className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23FF0000' fillOpacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                    }}
+                  />
+
+                  {/* 빛나는 효과 */}
+                  <motion.div
+                    className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"
+                    animate={{
+                      opacity: [0, 0.7, 0],
+                      left: ["-100%", "200%"],
+                    }}
+                    transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  />
+                  <motion.div
+                    className="absolute bottom-1/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"
+                    animate={{
+                      opacity: [0, 0.7, 0],
+                      left: ["200%", "-100%"],
+                    }}
+                    transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 3 }}
+                  />
+                </div>
+
+                {/* 메인 콘텐츠 */}
+                <div className="relative z-10 p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#C02B2B] to-[#E83A3A] flex items-center justify-center shadow-md">
+                        <Sparkles className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">새로운 광고 영상</h3>
+                        <p className="text-sm text-gray-600">Gummy AI가 최적화된 광고 영상을 생성했습니다</p>
+                      </div>
+                    </div>
+                    <div className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 shadow-sm">
+                      방금 생성됨
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="relative flex justify-center">
                       <PhoneMockup
@@ -770,31 +856,51 @@ export default function HomePage() {
 
                     <div className="flex flex-col justify-between">
                       <div>
-                        <div className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 mb-2 shadow-sm">
-                          방금 생성됨
-                        </div>
-
-                        <h3 className="text-lg font-bold text-gray-900">새로운 광고 영상</h3>
-                        <p className="text-sm text-gray-500 mt-1.5">
+                        <p className="text-sm text-gray-600 mt-1.5">
                           Gummy AI가 {mockStore.name}의 특성을 분석하여 최적화된 광고 영상을 생성했습니다.
                         </p>
                       </div>
 
-                      <div className="space-y-4 mt-4">
-                        <div className="flex flex-wrap gap-2">
-                          <Button className="bg-gradient-to-r from-[#C02B2B] to-[#E83A3A] hover:from-[#B02020] hover:to-[#D83030] text-sm h-9 px-4 rounded-xl shadow-sm">
-                            <Download className="w-4 h-4 mr-1.5" /> 다운로드
-                          </Button>
-                        </div>
-                        <Button
-                          variant="outline"
-                          className="border-gray-200 text-gray-700 text-sm h-9 px-4 rounded-xl shadow-sm"
+                      {/* 새로운 액션 버튼 디자인 */}
+                      <div className="mt-6 space-y-3">
+                        {/* 다운로드 버튼 */}
+                        <motion.button
+                          className="w-full flex items-center justify-between bg-gradient-to-r from-[#C02B2B] to-[#E83A3A] text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                         >
-                          <Share className="w-4 h-4 mr-1.5" /> 공유하기
-                        </Button>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                              <Download className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-bold">다운로드</p>
+                              <p className="text-xs text-white/80">MP4 파일로 저장</p>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-white/70" />
+                        </motion.button>
+
+                        {/* 공유하기 버튼 */}
+                        <motion.button
+                          className="w-full flex items-center justify-between bg-white border border-gray-200 text-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300"
+                          whileHover={{ scale: 1.02, backgroundColor: "#FAFAFA" }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                              <Share className="w-5 h-5 text-gray-600" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-bold">공유하기</p>
+                              <p className="text-xs text-gray-500">SNS에 바로 공유</p>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-gray-400" />
+                        </motion.button>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-3 mt-6">
                         <div className="text-center p-2 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 shadow-sm">
                           <p className="text-xs text-gray-500 mb-1">예상 조회수</p>
                           <p className="text-sm font-bold text-gray-900">1.2K+</p>
@@ -812,8 +918,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              </motion.div>
-
+            </motion.div>
           )}
 
           {/* 내 광고 영상 섹션 */}
