@@ -22,7 +22,6 @@ import {
   BarChart3,
   Users,
   ShoppingCart,
-  Zap,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -441,12 +440,12 @@ export default function HomePage() {
                 {/* 메인 모달 */}
                 <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
                   {/* 상단 장식 바 */}
-                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C02B2B] via-[#FF5050] to-[#C02B2B]"></div>
+                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#C02B2B]"></div>
 
                   {/* 배경 애니메이션 효과 */}
                   <div className="absolute inset-0 overflow-hidden">
                     {/* 배경 그라데이션 */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
 
                     {/* 움직이는 원형 효과들 */}
                     <motion.div
@@ -499,12 +498,6 @@ export default function HomePage() {
                   <div className="relative z-10 p-6">
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-full blur-md"></div>
-                          <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-[#C02B2B] to-[#E83A3A] shadow-md">
-                            <Zap className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
                         <div>
                           <h3 className="text-lg font-bold text-gray-900">영상 생성 중</h3>
                           <p className="text-sm text-gray-600">Gummy AI가 최적의 영상을 제작하고 있습니다</p>
@@ -519,12 +512,12 @@ export default function HomePage() {
                     </div>
 
                     <div className="space-y-6">
-                      {/* 원형 프로그레스 및 현재 단계 정보 */}
-                      <div className="flex flex-col md:flex-row items-center gap-6">
+                      {/* 원형 프로그레스 및 현재 단계 정보 - 개선된 레이아웃 */}
+                      <div className="flex flex-col md:flex-row gap-6 items-center">
                         {/* 원형 프로그레스 인디케이터 - 개선된 디자인 */}
                         <div className="relative flex-shrink-0">
                           <motion.div
-                            className="relative w-36 h-36 md:w-44 md:h-44"
+                            className="relative w-28 h-28 md:w-36 md:h-36"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5 }}
@@ -564,36 +557,16 @@ export default function HomePage() {
 
                             {/* 중앙 콘텐츠 */}
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                              <div className="relative">
-                                <motion.div
-                                  initial={{ scale: 1 }}
-                                  animate={{ scale: [1, 1.05, 1] }}
-                                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                                  className="absolute -inset-3 rounded-full bg-white/50 blur-md"
-                                ></motion.div>
-                                <motion.span
-                                  className="relative text-4xl font-bold text-[#C02B2B]"
-                                  animate={{
-                                    scale: [1, 1.05, 1],
-                                    transition: { duration: 0.3, ease: "easeInOut" },
-                                  }}
-                                >
-                                  <motion.span>{displayProgress}</motion.span>%
-                                </motion.span>
-                              </div>
-                              <span className="text-xs font-medium text-gray-500 mt-1">완료</span>
+                              <motion.span
+                                className="text-3xl md:text-4xl font-bold text-[#C02B2B]"
+                                animate={{
+                                  scale: [1, 1.05, 1],
+                                  transition: { duration: 0.3, ease: "easeInOut" },
+                                }}
+                              >
+                                <motion.span>{displayProgress}</motion.span>%
+                              </motion.span>
                             </div>
-
-                            {/* 미묘한 장식적 요소 */}
-                            <motion.div
-                              className="absolute -z-10 inset-0 rounded-full"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 1 }}
-                            >
-                              <div className="absolute top-3 right-3 w-3 h-3 rounded-full bg-[#C02B2B]/20"></div>
-                              <div className="absolute bottom-5 left-3 w-2 h-2 rounded-full bg-[#C02B2B]/20"></div>
-                            </motion.div>
                           </motion.div>
                         </div>
 
@@ -625,10 +598,6 @@ export default function HomePage() {
                                     ? steps[creationStep].description
                                     : "처리 중..."}
                                 </p>
-                              </div>
-                              <div className="flex-shrink-0 flex flex-col items-center justify-center ml-2">
-                                <div className="text-xl font-bold text-[#C02B2B]">{countdown}</div>
-                                <p className="text-xs text-gray-500">초</p>
                               </div>
                             </div>
                           </motion.div>
@@ -744,23 +713,23 @@ export default function HomePage() {
                         ))}
                       </div>
 
-                      {/* 추가 정보 카드 */}
+                      {/* 추가 정보 카드 - 개선된 디자인 */}
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-100/70 shadow-sm"
+                        className="p-5 bg-white/90 backdrop-blur-sm rounded-xl border border-red-100/20 shadow-sm"
                         whileHover={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                            <Info className="w-5 h-5 text-[#C02B2B]" />
+                        <div className="flex items-start gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#FFF5F5] to-white flex items-center justify-center shadow-sm">
+                            <Info className="w-6 h-6 text-[#C02B2B]" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-1">
+                            <h4 className="text-base font-bold text-gray-900 mb-2">
                               {mockStore.name}의 특성을 분석 중입니다
                             </h4>
-                            <p className="text-xs text-gray-600">
+                            <p className="text-sm text-gray-600 leading-relaxed">
                               Gummy AI가 맞춤형 광고 영상을 제작 중입니다. 완성된 영상은 바로 다운로드하거나 공유할 수
                               있습니다.
                             </p>
@@ -843,7 +812,8 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+
           )}
 
           {/* 내 광고 영상 섹션 */}

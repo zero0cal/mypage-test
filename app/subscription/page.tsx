@@ -36,7 +36,8 @@ const subscriptionPlans = [
 ]
 
 export default function SubscriptionPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  // selectedPlan 상태의 초기값을 null에서 "basic"으로 변경합니다.
+  const [selectedPlan, setSelectedPlan] = useState<string | null>("basic")
 
   const handleSubscribe = () => {
     if (selectedPlan) {
