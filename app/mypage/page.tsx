@@ -562,7 +562,7 @@ export default function HomePage() {
                                   transition: { duration: 0.3, ease: "easeInOut" },
                                 }}
                               >
-                                <motion.span>{displayProgress}</motion.span>% 
+                                <motion.span>{displayProgress}</motion.span>%
                               </motion.span>
                             </div>
                           </motion.div>
@@ -921,83 +921,171 @@ export default function HomePage() {
             </motion.div>
           )}
 
-          {/* 내 광고 영상 섹션 */}
+          {/* 내 광고 영상 섹션 - 모달 스타일로 변경 */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              },
+            }}
             transition={{ duration: 0.4, delay: 0.2 }}
-            className="space-y-4"
+            className="relative z-20"
           >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900">내 광고 영상</h2>
-              <div className="flex rounded-xl bg-gray-100 p-0.5 shadow-inner">
-                <button
-                  onClick={() => handleTabChange("all")}
-                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
-                    activeTab === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-                  }`}
-                >
-                  전체
-                </button>
-                <button
-                  onClick={() => handleTabChange("recent")}
-                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
-                    activeTab === "recent" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-                  }`}
-                >
-                  최근
-                </button>
-                <button
-                  onClick={() => handleTabChange("popular")}
-                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
-                    activeTab === "popular" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-                  }`}
-                >
-                  인기
-                </button>
+            {/* 모달 외부 효과 - 주변 글로우 */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-3xl blur-lg"></div>
+
+            {/* 메인 모달 */}
+            <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
+              {/* 상단 장식 바 */}
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#C02B2B]"></div>
+
+              {/* 배경 애니메이션 효과 */}
+              <div className="absolute inset-0 overflow-hidden">
+                {/* 배경 그라데이션 */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
+
+                {/* 움직이는 원형 효과들 */}
+                <motion.div
+                  className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-gradient-to-br from-red-100/30 via-orange-100/30 to-red-100/30 blur-xl"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.2, 0.3, 0.2],
+                    rotate: [0, 5, 0],
+                  }}
+                  transition={{ duration: 12, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-gradient-to-tr from-red-100/20 via-pink-100/20 to-orange-100/20 blur-xl"
+                  animate={{
+                    scale: [1.1, 1, 1.1],
+                    opacity: [0.15, 0.25, 0.15],
+                    rotate: [0, -5, 0],
+                  }}
+                  transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                />
+
+                {/* 미묘한 패턴 효과 */}
+                <div
+                  className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23FF0000' fillOpacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                  }}
+                />
+
+                {/* 빛나는 효과 */}
+                <motion.div
+                  className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"
+                  animate={{
+                    opacity: [0, 0.7, 0],
+                    left: ["-100%", "200%"],
+                  }}
+                  transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute bottom-1/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"
+                  animate={{
+                    opacity: [0, 0.7, 0],
+                    left: ["200%", "-100%"],
+                  }}
+                  transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 3 }}
+                />
+              </div>
+
+              {/* 메인 콘텐츠 */}
+              <div className="relative z-10 p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#C02B2B] to-[#E83A3A] flex items-center justify-center shadow-md">
+                      <Play className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-lg font-bold text-gray-900">내 광고 영상</h2>
+                  </div>
+                  <div className="flex rounded-xl bg-gray-100 p-0.5 shadow-inner">
+                    <button
+                      onClick={() => handleTabChange("all")}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
+                        activeTab === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                      }`}
+                    >
+                      전체
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("recent")}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
+                        activeTab === "recent" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                      }`}
+                    >
+                      최근
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("popular")}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
+                        activeTab === "popular" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                      }`}
+                    >
+                      인기
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {mockStore.videos.map((video, idx) => (
+                    <motion.div
+                      key={video.id}
+                      className="group relative"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 * idx }}
+                    >
+                      <div className="relative aspect-[9/16] rounded-xl overflow-hidden shadow-sm">
+                        <Image
+                          src={video.thumbnail || "/placeholder.svg?height=400&width=225"}
+                          alt={video.title}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#00000090] to-transparent"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30 backdrop-blur-sm">
+                          <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md hover:bg-white/40 transition-all duration-300 flex items-center justify-center transform group-hover:scale-110">
+                            <Play className="w-5 h-5 text-white" fill="white" />
+                          </button>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                          <h3 className="text-sm font-medium text-white truncate">{video.title}</h3>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-xs text-white/80 flex items-center gap-1">
+                              <Eye className="w-3 h-3" />
+                              {video.views} 조회
+                            </span>
+                            <span className="text-xs text-white/80 bg-black/20 px-1.5 py-0.5 rounded-full">
+                              {video.date}
+                            </span>
+                          </div>
+                        </div>
+                        {/* 상단 뱃지 */}
+                        <div className="absolute top-2 right-2">
+                          <div className="px-1.5 py-0.5 rounded-full bg-gradient-to-r from-[#C02B2B] to-[#E83A3A] text-white text-[10px] font-bold shadow-sm">
+                            HD
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="mt-4">
+                  <button className="w-full py-3 text-sm font-medium text-gray-600 bg-white/80 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm flex items-center justify-center backdrop-blur-sm">
+                    더 보기 <ChevronRight className="w-4 h-4 ml-1" />
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {mockStore.videos.map((video, idx) => (
-                <motion.div
-                  key={video.id}
-                  className="group relative"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * idx }}
-                >
-                  <div className="relative aspect-[9/16] rounded-xl overflow-hidden shadow-sm">
-                    <Image
-                      src={video.thumbnail || "/placeholder.svg?height=400&width=225"}
-                      alt={video.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#00000090] to-transparent"></div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30 backdrop-blur-sm">
-                      <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md hover:bg-white/40 transition-all duration-300 flex items-center justify-center transform group-hover:scale-110">
-                        <Play className="w-5 h-5 text-white" fill="white" />
-                      </button>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                      <h3 className="text-sm font-medium text-white truncate">{video.title}</h3>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs text-white/80 flex items-center gap-1">
-                          <Eye className="w-3 h-3" />
-                          {video.views} 조회
-                        </span>
-                        <span className="text-xs text-white/80">{video.date}</span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <button className="w-full py-3 text-sm font-medium text-gray-600 bg-white rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm flex items-center justify-center">
-              더 보기 <ChevronRight className="w-4 h-4 ml-1" />
-            </button>
           </motion.div>
 
           {/* Gummy AI 추천 섹션 */}
