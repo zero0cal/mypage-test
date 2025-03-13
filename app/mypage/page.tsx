@@ -948,7 +948,7 @@ export default function HomePage() {
               {/* 배경 애니메이션 효과 */}
               <div className="absolute inset-0 overflow-hidden">
                 {/* 배경 그라데이션 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0]"></div>
 
                 {/* 움직이는 원형 효과들 */}
                 <motion.div
