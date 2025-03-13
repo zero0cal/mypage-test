@@ -443,7 +443,7 @@ export default function HomePage() {
                   {/* 배경 애니메이션 효과 */}
                   <div className="absolute inset-0 overflow-hidden">
                     {/* 배경 그라데이션 */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-100"></div>
 
                     {/* 움직이는 원형 효과들 */}
                     <motion.div
@@ -768,7 +768,7 @@ export default function HomePage() {
                 {/* 배경 애니메이션 효과 */}
                 <div className="absolute inset-0 overflow-hidden">
                   {/* 배경 그라데이션 */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-100"></div>
 
                   {/* 움직이는 원형 효과들 */}
                   <motion.div
@@ -942,13 +942,10 @@ export default function HomePage() {
 
             {/* 메인 모달 */}
             <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
-              {/* 상단 장식 바 */}
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#C02B2B]"></div>
-
               {/* 배경 애니메이션 효과 */}
               <div className="absolute inset-0 overflow-hidden">
                 {/* 배경 그라데이션 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0]"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F8] to-[#FFF0F0] opacity-0"></div>
 
                 {/* 움직이는 원형 효과들 */}
                 <motion.div
